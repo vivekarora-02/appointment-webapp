@@ -1,0 +1,129 @@
+# Appointment - API
+
+## Introduction
+
+1. A student A enters his university ID number and pswd and gets a unique token(pick a code generated uuid for now) back which is used in authentication in all further APIs for this user - sent as bearer token in the headers.
+2. A sees a list of free sessions available with the dean. Each dean slot is 1 hr long and dean is only available on Thur, Fri 10 AM every week.
+3. A picks one of the above slots and books.
+4. Dean logins in with his university ID and pswd (similar to 1 above). Yes Dean too gets his own token.
+5. Dean sees a list of all pending sessions - student name, and slot details. Currently only A.
+6. Student B logs in, gets a list of free slots and books a slot.
+7. Dean logs in back and sees a list of his pending sessions - both A and B.
+8. Dean logs in back after slot time booked by A and he can see only B in the list. (You can simulate this by manually changing the start slot time that A booked to a past time. Yes thts is a DB manual edit)
+
+## Technologies Used
+
+    - JavaScript
+    - Node.js (Runtime Environment)
+    - Express (Node.js web application framework)
+    - MongoDB (Database)
+    - Mongoose (MongoDB Object Data Modeling library)
+    - Docker*
+    - Postman (API Platform for designing, building, testing, and iterating APIs)
+    - JSON Web Token (authentication)
+    - bcrypt (password hashing)
+    - validator (email validation)
+
+## Authentication & Authorization
+
+Appointment - API uses JWT (JSON Web Tokens) for user authentication. Users need to be logged in to get a JWT token, which then allows them to access the appointment routes. If not logged in, users will need to sign up, after which a JWT token will be assigned to them.
+
+Passwords stored in MongoDB are encrypted using the bcrypt library.A salt is generated and then passed, along with the original password, to produce a hashed version, ensuring the safety of user passwords.
+
+Emails are validated during sign - up using the validator library, ensuring that users provide valid email addresses.
+
+## API Overview
+
+This API follows a RESTful approach, providing endpoints for the standard CRUD operations: create, read, update, and delete.The API is versioned with "/api/v1" as the prefix, and the resource being accessed is "appointments". By adhering to a well - defined URL structure, developers can easily interact with the API and build applications that consume it.
+
+## Endpoints & Routes
+
+### Appointment Endpoints
+
+The following URL endpoints are available for the Appointment-API:
+
+- **GET** <http://localhost:'PORT'/api/v1/appointments> - Retrieves a list of all appointments. (Requires JWT Authentication)
+- **GET** <http://localhost:'PORT'/api/v1/appointments/:id> - Retrieves the details of a specific appointment. (Requires JWT Authentication)
+- **POST** <http://localhost:'PORT'/api/v1/appointments> - Creates a new appointment. (Requires JWT Authentication)
+- **PUT** <http://localhost:'PORT'/api/v1/appointments/:id> - Updates the details of a specific appointment. (Requires JWT Authentication)
+- **DELETE** <http://localhost:'PORT'/api/v1/appointments/:id> - Deletes a specific appointment. (Requires JWT Authentication)
+
+### User Authentication Routes
+
+The AuthRoutes provide the following functionalities:
+
+- **GET** <http://localhost:'PORT'/api/v1/users/signup> - Render the sign-up page.
+- **GET** <http://localhost:'PORT'/api/v1/users/login> - Render the log-in page.
+- **POST** <http://localhost:'PORT'/api/v1/users/signup> - Handle user sign-up and create a new user.
+- **POST** <http://localhost:'PORT'/api/v1/users/login> - Handle user log-in.
+- **GET** <http://localhost:'PORT'/api/v1/users/logout> - Handle user logout and invalidate the JWT token.
+
+## JSON Structure
+
+Each appointment record in the API follows the structure defined by the Mongoose schema:
+
+```
+{
+    appointment_sl_id: Number,
+    doctor_id: Number,
+    patient_id: Number,
+    duration: Number,
+    reason: String,
+    status: String,
+    createdAt: Date,
+    updatedAt: Date
+}
+```
+
+Each user record in the API follows the structure defined by the Mongoose schema:
+
+```
+{
+    email: String,
+    password: String
+}
+```
+
+## Installation
+
+To use this project, follow these steps:
+
+1. Clone the repository: `git clone https://github.com/your-username/appointment-api.git`
+2. Install the dependencies: `npm install`
+3. Set up the MongoDB database and configure the connection in the code.
+4. Run the server: `npm start`
+
+## Usage
+
+Once the server is running, you can make HTTP requests to the defined endpoints using tools like Postman. The API allows you to manage appointments with doctors, including creating new appointments, updating existing ones, retrieving appointment details, and deleting appointments.
+
+## Error Handling
+
+The API is equipped with a `handleErrors` function that provides detailed error messages for specific error types, aiding in a smoother developer experience and efficient debugging.
+
+## Pending Tasks
+
+As the application continues to evolve, there are several tasks that are currently pending completion:
+
+### Docker Integration
+
+- [ ] **Dockerfile Creation**: Develop a Dockerfile to containerize the application.
+- [ ] **Docker Image Building**: Build the Docker image from the created Dockerfile.
+- [ ] **Local Docker Image Testing**: Ensure the Docker image runs correctly when executed locally.
+- [ ] **Pushing Docker Image**: Push the built Docker image to a container registry (e.g., Docker Hub).
+- [ ] **Docker Compose Integration**: Develop a `docker-compose.yml` file to orchestrate the application along with its dependencies, such as MongoDB.
+- [ ] **Docker Compose Testing**: Validate the application's functionality using the docker-compose setup.
+- [ ] **README.md Update**: Augment this README.md with instructions detailing how users can run the application using Docker and docker-compose.
+
+## License
+
+This project is licensed under the ISC license. See the [LICENSE.md](LICENSE.md) file for details.
+
+## Acknowledgements
+
+- [How to Build a RESTful API in Node.js(with Express.js) by Kelly Arellano](https://rapidapi.com/blog/nodejs-express-rest-api-example/)
+- [Node.js Crash Course Tutorial](https://www.youtube.com/playlist?list=PL4cUxeGkcC9jsz4LDYc6kv3ymONOKxwBU)
+- [Node.js Auth Tutorial(JWT)](https://youtube.com/playlist?list=PL4cUxeGkcC9iqqESP8335DA5cRFp8loyp)
+
+> **Note**
+> : The features or components marked with an asterisk (\*) are currently in development and will be available in future iterations of the API.
